@@ -1,0 +1,1135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rongo University - Election Results</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #003366;
+            --secondary-color: #FFD700;
+            --accent-color: #E74C3C;
+            --light-color: #F8F9FA;
+            --dark-color: #343A40;
+            --success-color: #28A745;
+            --info-color: #17A2B8;
+            --transition-speed: 0.3s;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--light-color);
+            color: var(--dark-color);
+            overflow-x: hidden;
+        }
+
+        /* Header Styles */
+        .header {
+            background: linear-gradient(135deg, var(--primary-color), #001a33);
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            height: 70px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo img {
+            height: 110px;
+            width: auto;
+            animation: pulse 2s infinite;
+        }
+
+        .logo-text h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        .logo-text p {
+            font-size: 0.8rem;
+            opacity: 0.8;
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: 250px;
+            height: calc(100vh - 70px);
+            background: linear-gradient(180deg, var(--primary-color), #00264d);
+            position: fixed;
+            top: 70px;
+            left: 0;
+            overflow-y: auto;
+            transition: transform var(--transition-speed) ease;
+            z-index: 999;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Updated Sidebar Styles */
+        .sidebar-nav {
+            display: flex;
+            flex-direction: column;
+            padding: 1rem 0;
+        }
+
+        .sidebar-link {
+            display: flex;
+            align-items: center;
+            padding: 12px 20px;
+            color: rgba(255, 255, 255, 0.9);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all var(--transition-speed) ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .sidebar-link::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            transition: left 0.3s ease;
+        }
+
+        .sidebar-link:hover {
+            color: white;
+            background: rgba(255, 255, 255, 0.05);
+            padding-left: 25px;
+        }
+
+        .sidebar-link:hover::before {
+            left: 0;
+        }
+
+        .sidebar-link i {
+            margin-right: 10px;
+            font-size: 1.1rem;
+            width: 20px;
+            text-align: center;
+        }
+
+        .sidebar-link.active {
+            color: var(--secondary-color);
+            background: rgba(255, 215, 0, 0.1);
+            border-left: 4px solid var(--secondary-color);
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            margin-left: 250px;
+            margin-top: 70px;
+            padding: 2rem;
+            min-height: calc(100vh - 70px);
+            transition: margin-left var(--transition-speed) ease;
+        }
+
+        /* Page Header */
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #eee;
+        }
+
+        .page-header h1 {
+            font-size: 2rem;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .page-header h1 i {
+            color: var(--secondary-color);
+        }
+
+        .election-selector {
+            position: relative;
+        }
+
+        .election-dropdown {
+            background: white;
+            border: 1px solid #ddd;
+            padding: 10px 15px;
+            border-radius: 50px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            min-width: 250px;
+        }
+
+        .election-dropdown:hover {
+            border-color: var(--primary-color);
+        }
+
+        .election-dropdown i {
+            color: var(--primary-color);
+        }
+
+        /* Results Summary */
+        .results-summary {
+            background: white;
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            margin-bottom: 2rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .summary-card {
+            text-align: center;
+            padding: 1.5rem;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .summary-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .summary-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+        }
+
+        .summary-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .summary-label {
+            color: #666;
+            font-size: 1rem;
+        }
+
+        /* Results Tabs */
+        .results-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .results-tab {
+            padding: 10px 20px;
+            border-radius: 50px;
+            background: white;
+            border: 1px solid #ddd;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .results-tab:hover {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        .results-tab.active {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        /* Position Results */
+        .position-results {
+            margin-bottom: 3rem;
+        }
+
+        .position-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--primary-color);
+        }
+
+        .position-title {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        .position-votes {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .candidates-list {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .candidate-row {
+            display: flex;
+            align-items: center;
+            padding: 1.5rem;
+            border-bottom: 1px solid #eee;
+            transition: all 0.3s ease;
+        }
+
+        .candidate-row:last-child {
+            border-bottom: none;
+        }
+
+        .candidate-row:hover {
+            background: rgba(0, 51, 102, 0.03);
+        }
+
+        .candidate-row.winner {
+            background: rgba(255, 215, 0, 0.05);
+            border-left: 4px solid var(--secondary-color);
+        }
+
+        .candidate-rank {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            width: 50px;
+            text-align: center;
+        }
+
+        .candidate-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex-grow: 1;
+        }
+
+        .candidate-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--secondary-color);
+        }
+
+        .candidate-details {
+            flex-grow: 1;
+        }
+
+        .candidate-name {
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 5px;
+        }
+
+        .candidate-party {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .vote-bar-container {
+            width: 200px;
+            height: 10px;
+            background: #eee;
+            border-radius: 5px;
+            overflow: hidden;
+            margin: 5px 0;
+        }
+
+        .vote-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            border-radius: 5px;
+            transition: width 1s ease;
+        }
+
+        .vote-percentage {
+            font-size: 0.9rem;
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        .vote-count {
+            width: 100px;
+            text-align: right;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .winner-badge {
+            background: var(--secondary-color);
+            color: var(--primary-color);
+            padding: 5px 10px;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-left: 15px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        /* Charts Section */
+        .charts-section {
+            background: white;
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            margin-bottom: 2rem;
+        }
+
+        .section-header {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 2rem;
+        }
+
+        .chart-container {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            height: 300px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chart-title {
+            font-size: 1.1rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        .chart-placeholder {
+            flex-grow: 1;
+            background: #f8f9fa;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+        }
+
+        /* Results Timeline */
+        .results-timeline {
+            background: white;
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            margin-bottom: 2rem;
+        }
+
+        .timeline-item {
+            display: flex;
+            margin-bottom: 1.5rem;
+            position: relative;
+            padding-left: 30px;
+        }
+
+        .timeline-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: 5px;
+            top: 0;
+            height: 100%;
+            width: 2px;
+            background: var(--secondary-color);
+        }
+
+        .timeline-dot {
+            position: absolute;
+            left: 0;
+            top: 5px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            border: 2px solid var(--secondary-color);
+            z-index: 2;
+        }
+
+        .timeline-content {
+            flex-grow: 1;
+        }
+
+        .timeline-date {
+            font-size: 0.9rem;
+            color: var(--secondary-color);
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .timeline-event {
+            font-weight: 500;
+            color: var(--primary-color);
+            margin-bottom: 5px;
+        }
+
+        .timeline-description {
+            color: #666;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        /* Download Section */
+        .download-section {
+            background: white;
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            margin-bottom: 2rem;
+        }
+
+        .download-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .download-card {
+            background: rgba(0, 51, 102, 0.05);
+            border-radius: 10px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .download-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .download-icon {
+            font-size: 2rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        .download-title {
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .download-description {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .download-btn {
+            display: inline-block;
+            padding: 8px 15px;
+            background: var(--primary-color);
+            color: white;
+            border-radius: 50px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .download-btn:hover {
+            background: #00264d;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 10px rgba(0, 51, 102, 0.2);
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--dark-color);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+            border-radius: 10px;
+            margin-top: 2rem;
+        }
+
+        .footer p {
+            margin-bottom: 1rem;
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 1rem;
+        }
+
+        .social-link {
+            color: white;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+        }
+
+        .social-link:hover {
+            color: var(--secondary-color);
+            transform: translateY(-3px);
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 1200px) {
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 992px) {
+            .sidebar {
+                transform: translateX(-100%);
+                position: fixed;
+                top: 70px;
+                left: 0;
+                width: 280px;
+                height: calc(100vh - 70px);
+                z-index: 999;
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .mobile-menu-btn {
+                display: block;
+            }
+
+            .page-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+
+            .election-dropdown {
+                width: 100%;
+            }
+
+            .candidate-row {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+
+            .vote-bar-container {
+                width: 100%;
+            }
+
+            .vote-count {
+                text-align: left;
+                width: auto;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .results-summary {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .candidate-info {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .header {
+                padding: 1rem;
+            }
+
+            .logo-text h1 {
+                font-size: 1.2rem;
+            }
+
+            .logo-text p {
+                font-size: 0.7rem;
+            }
+
+            .page-header h1 {
+                font-size: 1.5rem;
+            }
+
+            .results-summary {
+                grid-template-columns: 1fr;
+            }
+
+            .results-tabs {
+                flex-direction: column;
+            }
+
+            .download-options {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="logo">
+            <img src="images/Logo.png" alt="Rongo University Logo" id="university-logo">
+            <div class="logo-text">
+                <h1>Rongo University</h1>
+                <p>Campus Voting System</p>
+            </div>
+        </div>
+        <button class="mobile-menu-btn" id="mobileMenuBtn">
+            <i class="fas fa-bars"></i>
+        </button>
+    </header>
+
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <nav>
+            <ul class="sidebar-nav">
+                <li class="sidebar-item">
+                    <a href="index.html" class="sidebar-link">
+                        <i class="fas fa-home"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="voting.html" class="sidebar-link">
+                        <i class="fas fa-vote-yea"></i>
+                        <span>Current Elections</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="history.html" class="sidebar-link">
+                        <i class="fas fa-history"></i>
+                        <span>Voting History</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="candidates.html" class="sidebar-link">
+                        <i class="fas fa-user-graduate"></i>
+                        <span>Candidates</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="results.html" class="sidebar-link active">
+                        <i class="fas fa-poll"></i>
+                        <span>Results</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="#" class="sidebar-link">
+                        <i class="fas fa-user-shield"></i>
+                        <span>Admin Panel</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="#" class="sidebar-link">
+                        <i class="fas fa-cog"></i>
+                        <span>Settings</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="#" class="sidebar-link">
+                        <i class="fas fa-question-circle"></i>
+                        <span>Help & Support</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content" id="mainContent">
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1><i class="fas fa-poll"></i> Election Results</h1>
+            <div class="election-selector">
+                <button class="election-dropdown">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span>Student Union Elections 2023</span>
+                    <i class="fas fa-chevron-down"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Results Summary -->
+        <div class="results-summary">
+            <div class="summary-card">
+                <div class="summary-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div class="summary-number">5,248</div>
+                <div class="summary-label">Total Voters</div>
+            </div>
+            <div class="summary-card">
+                <div class="summary-icon">
+                    <i class="fas fa-vote-yea"></i>
+                </div>
+                <div class="summary-number">4,567</div>
+                <div class="summary-label">Votes Cast</div>
+            </div>
+            <div class="summary-card">
+                <div class="summary-icon">
+                    <i class="fas fa-percentage"></i>
+                </div>
+                <div class="summary-number">87%</div>
+                <div class="summary-label">Voter Turnout</div>
+            </div>
+            <div class="summary-card">
+                <div class="summary-icon">
+                    <i class="fas fa-user-graduate"></i>
+                </div>
+                <div class="summary-number">24</div>
+                <div class="summary-label">Candidates</div>
+            </div>
+        </div>
+
+        <!-- Results Tabs -->
+        <div class="results-tabs">
+            <div class="results-tab active">All Positions</div>
+            <div class="results-tab">President</div>
+            <div class="results-tab">Secretary General</div>
+            <div class="results-tab">Treasurer</div>
+            <div class="results-tab">Faculty Reps</div>
+        </div>
+
+        <!-- Position Results -->
+        <div class="position-results">
+            <div class="position-header">
+                <h2 class="position-title">President</h2>
+                <div class="position-votes">4,567 votes cast</div>
+            </div>
+            <div class="candidates-list">
+                <!-- Winner -->
+                <div class="candidate-row winner">
+                    <div class="candidate-rank">1</div>
+                    <div class="candidate-info">
+                        <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Candidate" class="candidate-avatar">
+                        <div class="candidate-details">
+                            <div class="candidate-name">John Mwangi</div>
+                            <div class="candidate-party">Progressive Alliance</div>
+                            <div class="vote-bar-container">
+                                <div class="vote-bar" style="width: 62%;"></div>
+                            </div>
+                            <div class="vote-percentage">62% of votes</div>
+                        </div>
+                    </div>
+                    <div class="vote-count">2,831 votes</div>
+                    <div class="winner-badge">
+                        <i class="fas fa-trophy"></i> Winner
+                    </div>
+                </div>
+                <!-- Runner-up -->
+                <div class="candidate-row">
+                    <div class="candidate-rank">2</div>
+                    <div class="candidate-info">
+                        <img src="https://randomuser.me/api/portraits/women/45.jpg" alt="Candidate" class="candidate-avatar">
+                        <div class="candidate-details">
+                            <div class="candidate-name">Grace Wanjiku</div>
+                            <div class="candidate-party">Students First</div>
+                            <div class="vote-bar-container">
+                                <div class="vote-bar" style="width: 35%;"></div>
+                            </div>
+                            <div class="vote-percentage">35% of votes</div>
+                        </div>
+                    </div>
+                    <div class="vote-count">1,598 votes</div>
+                </div>
+                <!-- Third place -->
+                <div class="candidate-row">
+                    <div class="candidate-rank">3</div>
+                    <div class="candidate-info">
+                        <img src="https://randomuser.me/api/portraits/men/22.jpg" alt="Candidate" class="candidate-avatar">
+                        <div class="candidate-details">
+                            <div class="candidate-name">David Ochieng</div>
+                            <div class="candidate-party">Independent</div>
+                            <div class="vote-bar-container">
+                                <div class="vote-bar" style="width: 3%;"></div>
+                            </div>
+                            <div class="vote-percentage">3% of votes</div>
+                        </div>
+                    </div>
+                    <div class="vote-count">138 votes</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Another Position -->
+        <div class="position-results">
+            <div class="position-header">
+                <h2 class="position-title">Secretary General</h2>
+                <div class="position-votes">4,567 votes cast</div>
+            </div>
+            <div class="candidates-list">
+                <!-- Winner -->
+                <div class="candidate-row winner">
+                    <div class="candidate-rank">1</div>
+                    <div class="candidate-info">
+                        <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Candidate" class="candidate-avatar">
+                        <div class="candidate-details">
+                            <div class="candidate-name">Sarah Atieno</div>
+                            <div class="candidate-party">Students First</div>
+                            <div class="vote-bar-container">
+                                <div class="vote-bar" style="width: 58%;"></div>
+                            </div>
+                            <div class="vote-percentage">58% of votes</div>
+                        </div>
+                    </div>
+                    <div class="vote-count">2,649 votes</div>
+                    <div class="winner-badge">
+                        <i class="fas fa-trophy"></i> Winner
+                    </div>
+                </div>
+                <!-- Runner-up -->
+                <div class="candidate-row">
+                    <div class="candidate-rank">2</div>
+                    <div class="candidate-info">
+                        <img src="https://randomuser.me/api/portraits/men/67.jpg" alt="Candidate" class="candidate-avatar">
+                        <div class="candidate-details">
+                            <div class="candidate-name">Brian Otieno</div>
+                            <div class="candidate-party">Progressive Alliance</div>
+                            <div class="vote-bar-container">
+                                <div class="vote-bar" style="width: 42%;"></div>
+                            </div>
+                            <div class="vote-percentage">42% of votes</div>
+                        </div>
+                    </div>
+                    <div class="vote-count">1,918 votes</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Charts Section -->
+        <div class="charts-section">
+            <h2 class="section-header">
+                <i class="fas fa-chart-bar"></i> Voting Analytics
+            </h2>
+            <div class="charts-grid">
+                <div class="chart-container">
+                    <h3 class="chart-title">Voter Turnout by Faculty</h3>
+                    <div class="chart-placeholder">
+                        <i class="fas fa-chart-pie" style="font-size: 2rem; color: #ccc;"></i>
+                        <span style="margin-left: 10px;">Turnout Chart</span>
+                    </div>
+                </div>
+                <div class="chart-container">
+                    <h3 class="chart-title">Voting Timeline</h3>
+                    <div class="chart-placeholder">
+                        <i class="fas fa-chart-line" style="font-size: 2rem; color: #ccc;"></i>
+                        <span style="margin-left: 10px;">Timeline Chart</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results Timeline -->
+        <div class="results-timeline">
+            <h2 class="section-header">
+                <i class="fas fa-history"></i> Election Timeline
+            </h2>
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                    <div class="timeline-date">May 1, 2023</div>
+                    <div class="timeline-event">Nominations Open</div>
+                    <div class="timeline-description">
+                        The nomination period for candidates began with 42 students submitting their applications.
+                    </div>
+                </div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                    <div class="timeline-date">May 8, 2023</div>
+                    <div class="timeline-event">Campaign Period Starts</div>
+                    <div class="timeline-description">
+                        Approved candidates began their campaigns with manifesto presentations and debates.
+                    </div>
+                </div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                    <div class="timeline-date">May 15-17, 2023</div>
+                    <div class="timeline-event">Voting Period</div>
+                    <div class="timeline-description">
+                        Students cast their votes electronically with a record 87% turnout.
+                    </div>
+                </div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                    <div class="timeline-date">May 18, 2023</div>
+                    <div class="timeline-event">Results Announcement</div>
+                    <div class="timeline-description">
+                        Final results were verified and announced by the election committee.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Download Section -->
+        <div class="download-section">
+            <h2 class="section-header">
+                <i class="fas fa-download"></i> Download Results
+            </h2>
+            <div class="download-options">
+                <div class="download-card">
+                    <div class="download-icon">
+                        <i class="fas fa-file-pdf"></i>
+                    </div>
+                    <h3 class="download-title">Full Results PDF</h3>
+                    <p class="download-description">
+                        Complete election results in PDF format for printing and archiving.
+                    </p>
+                    <a href="#" class="download-btn">Download</a>
+                </div>
+                <div class="download-card">
+                    <div class="download-icon">
+                        <i class="fas fa-file-excel"></i>
+                    </div>
+                    <h3 class="download-title">Spreadsheet Data</h3>
+                    <p class="download-description">
+                        Raw voting data in Excel format for further analysis.
+                    </p>
+                    <a href="#" class="download-btn">Download</a>
+                </div>
+                <div class="download-card">
+                    <div class="download-icon">
+                        <i class="fas fa-file-alt"></i>
+                    </div>
+                    <h3 class="download-title">Executive Summary</div>
+                    <p class="download-description">
+                        Key findings and analysis of the election results.
+                    </p>
+                    <a href="#" class="download-btn">Download</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="social-links">
+                <a href="#" class="social-link"><i class="fab fa-facebook-f"></i></a>
+                <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+                <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
+                <a href="#" class="social-link"><i class="fab fa-linkedin-in"></i></a>
+            </div>
+            <p>© 2023 Rongo University Voting System. All rights reserved.</p>
+            <p>Transparent, verifiable election results powered by blockchain technology.</p>
+        </footer>
+    </main>
+
+    <script>
+        // Mobile Menu Toggle
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const sidebar = document.getElementById('sidebar');
+        const mainContent = document.getElementById('mainContent');
+
+        mobileMenuBtn.addEventListener('click', () => {
+            sidebar.classList.toggle('active');
+            mobileMenuBtn.innerHTML = sidebar.classList.contains('active') 
+                ? '<i class="fas fa-times"></i>' 
+                : '<i class="fas fa-bars"></i>';
+        });
+
+        // Close sidebar when clicking on main content (on mobile)
+        mainContent.addEventListener('click', () => {
+            if (window.innerWidth <= 992 && sidebar.classList.contains('active')) {
+                sidebar.classList.remove('active');
+                mobileMenuBtn.innerHTML = '<i class="fas fa-bars"></i>';
+            }
+        });
+
+        // Results tabs functionality
+        const resultsTabs = document.querySelectorAll('.results-tab');
+        
+        resultsTabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                resultsTabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                // Here you would filter results based on the selected tab
+            });
+        });
+
+        // Animate vote bars on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            const voteBars = document.querySelectorAll('.vote-bar');
+            voteBars.forEach(bar => {
+                const originalWidth = bar.style.width;
+                bar.style.width = '0';
+                setTimeout(() => {
+                    bar.style.width = originalWidth;
+                }, 100);
+            });
+        });
+
+        // Election dropdown functionality
+        const electionDropdown = document.querySelector('.election-dropdown');
+        // This would be expanded to show a dropdown of elections
+    </script>
+</body>
+</html>

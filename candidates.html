@@ -1,0 +1,1224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rongo University - Candidates</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #003366;
+            --secondary-color: #FFD700;
+            --accent-color: #E74C3C;
+            --light-color: #F8F9FA;
+            --dark-color: #343A40;
+            --success-color: #28A745;
+            --info-color: #17A2B8;
+            --transition-speed: 0.3s;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--light-color);
+            color: var(--dark-color);
+            overflow-x: hidden;
+        }
+
+        /* Header Styles */
+        .header {
+            background: linear-gradient(135deg, var(--primary-color), #001a33);
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            height: 70px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo img {
+            height: 110px;
+            width: auto;
+            animation: pulse 2s infinite;
+        }
+
+        .logo-text h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        .logo-text p {
+            font-size: 0.8rem;
+            opacity: 0.8;
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: 250px;
+            height: calc(100vh - 70px);
+            background: linear-gradient(180deg, var(--primary-color), #00264d);
+            position: fixed;
+            top: 70px;
+            left: 0;
+            overflow-y: auto;
+            transition: transform var(--transition-speed) ease;
+            z-index: 999;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Updated Sidebar Styles */
+        .sidebar-nav {
+            display: flex;
+            flex-direction: column;
+            padding: 1rem 0;
+        }
+
+        .sidebar-link {
+            display: flex;
+            align-items: center;
+            padding: 12px 20px;
+            color: rgba(255, 255, 255, 0.9);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all var(--transition-speed) ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .sidebar-link::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            transition: left 0.3s ease;
+        }
+
+        .sidebar-link:hover {
+            color: white;
+            background: rgba(255, 255, 255, 0.05);
+            padding-left: 25px;
+        }
+
+        .sidebar-link:hover::before {
+            left: 0;
+        }
+
+        .sidebar-link i {
+            margin-right: 10px;
+            font-size: 1.1rem;
+            width: 20px;
+            text-align: center;
+        }
+
+        .sidebar-link.active {
+            color: var(--secondary-color);
+            background: rgba(255, 215, 0, 0.1);
+            border-left: 4px solid var(--secondary-color);
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            margin-left: 250px;
+            margin-top: 70px;
+            padding: 2rem;
+            min-height: calc(100vh - 70px);
+            transition: margin-left var(--transition-speed) ease;
+        }
+
+        /* Page Header */
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #eee;
+        }
+
+        .page-header h1 {
+            font-size: 2rem;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .page-header h1 i {
+            color: var(--secondary-color);
+        }
+
+        .election-selector {
+            position: relative;
+        }
+
+        .election-dropdown {
+            background: white;
+            border: 1px solid #ddd;
+            padding: 10px 15px;
+            border-radius: 50px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            min-width: 250px;
+        }
+
+        .election-dropdown:hover {
+            border-color: var(--primary-color);
+        }
+
+        .election-dropdown i {
+            color: var(--primary-color);
+        }
+
+        /* Candidate Filter */
+        .candidate-filter {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-tab {
+            padding: 10px 20px;
+            border-radius: 50px;
+            background: white;
+            border: 1px solid #ddd;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .filter-tab:hover {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        .filter-tab.active {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        .search-box {
+            position: relative;
+            flex-grow: 1;
+            max-width: 400px;
+        }
+
+        .search-box input {
+            padding: 10px 15px 10px 35px;
+            border-radius: 50px;
+            border: 1px solid #ddd;
+            width: 100%;
+            transition: all 0.3s ease;
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(0, 51, 102, 0.1);
+        }
+
+        .search-box i {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #777;
+        }
+
+        /* Candidates Grid */
+        .candidates-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .candidate-card {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .candidate-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .candidate-banner {
+            height: 120px;
+            background: linear-gradient(135deg, var(--primary-color), #001a33);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .candidate-banner::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at center, transparent 0%, rgba(0, 0, 0, 0.2) 100%);
+        }
+
+        .candidate-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            border: 4px solid white;
+            object-fit: cover;
+            position: absolute;
+            bottom: -50px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 2;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .candidate-party {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 5px 10px;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .candidate-content {
+            padding: 60px 20px 20px;
+            text-align: center;
+        }
+
+        .candidate-name {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 5px;
+        }
+
+        .candidate-position {
+            color: var(--secondary-color);
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .candidate-course {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+        }
+
+        .candidate-bio {
+            color: #555;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            margin-bottom: 20px;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .candidate-stats {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-weight: 700;
+            color: var(--primary-color);
+            font-size: 1.1rem;
+        }
+
+        .stat-label {
+            font-size: 0.7rem;
+            color: #777;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .candidate-actions {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .action-btn {
+            padding: 8px 15px;
+            border-radius: 50px;
+            font-weight: 500;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .btn-primary {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background: #00264d;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 10px rgba(0, 51, 102, 0.2);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--primary-color);
+            border: 1px solid var(--primary-color);
+        }
+
+        .btn-outline:hover {
+            background: rgba(0, 51, 102, 0.05);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 10px rgba(0, 51, 102, 0.1);
+        }
+
+        /* Featured Candidate */
+        .featured-candidate {
+            grid-column: 1 / -1;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            margin-bottom: 2rem;
+        }
+
+        .featured-image {
+            position: relative;
+            min-height: 300px;
+            background: linear-gradient(135deg, var(--primary-color), #001a33);
+        }
+
+        .featured-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .featured-party {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 5px 15px;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .featured-content {
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .featured-tag {
+            display: inline-block;
+            background: var(--secondary-color);
+            color: var(--primary-color);
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .featured-name {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 5px;
+        }
+
+        .featured-position {
+            font-size: 1.2rem;
+            color: var(--secondary-color);
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .featured-course {
+            color: #666;
+            font-size: 1rem;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .featured-bio {
+            color: #555;
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
+
+        .featured-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .featured-stat {
+            text-align: center;
+            padding: 15px;
+            background: rgba(0, 51, 102, 0.05);
+            border-radius: 5px;
+        }
+
+        .featured-stat-number {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 5px;
+        }
+
+        .featured-stat-label {
+            font-size: 0.8rem;
+            color: #666;
+        }
+
+        /* No Candidates Message */
+        .no-candidates {
+            text-align: center;
+            padding: 3rem;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .no-candidates i {
+            font-size: 3rem;
+            color: var(--secondary-color);
+            margin-bottom: 1rem;
+        }
+
+        .no-candidates h3 {
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .no-candidates p {
+            color: #666;
+            margin-bottom: 1.5rem;
+        }
+
+        /* Pagination */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 5px;
+            margin-top: 2rem;
+        }
+
+        .page-item {
+            list-style: none;
+        }
+
+        .page-link {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 5px;
+            background: white;
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 500;
+            border: 1px solid #ddd;
+            transition: all 0.3s ease;
+        }
+
+        .page-link:hover {
+            background: rgba(0, 51, 102, 0.1);
+        }
+
+        .page-link.active {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        .page-link.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--dark-color);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+            border-radius: 10px;
+            margin-top: 2rem;
+        }
+
+        .footer p {
+            margin-bottom: 1rem;
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 1rem;
+        }
+
+        .social-link {
+            color: white;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+        }
+
+        .social-link:hover {
+            color: var(--secondary-color);
+            transform: translateY(-3px);
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 1200px) {
+            .featured-candidate {
+                grid-template-columns: 1fr;
+            }
+            
+            .featured-image {
+                min-height: 200px;
+            }
+        }
+
+        @media (max-width: 992px) {
+            .sidebar {
+                transform: translateX(-100%);
+                position: fixed;
+                top: 70px;
+                left: 0;
+                width: 280px;
+                height: calc(100vh - 70px);
+                z-index: 999;
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .mobile-menu-btn {
+                display: block;
+            }
+
+            .page-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+
+            .candidate-filter {
+                flex-direction: column;
+            }
+
+            .search-box {
+                max-width: 100%;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .candidates-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .featured-stats {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .header {
+                padding: 1rem;
+            }
+
+            .logo-text h1 {
+                font-size: 1.2rem;
+            }
+
+            .logo-text p {
+                font-size: 0.7rem;
+            }
+
+            .page-header h1 {
+                font-size: 1.5rem;
+            }
+
+            .candidates-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .featured-stats {
+                grid-template-columns: 1fr;
+            }
+
+            .pagination {
+                flex-wrap: wrap;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="logo">
+            <img src="images/Logo.png" alt="Rongo University Logo" id="university-logo">
+            <div class="logo-text">
+                <h1>Rongo University</h1>
+                <p>Campus Voting System</p>
+            </div>
+        </div>
+        <button class="mobile-menu-btn" id="mobileMenuBtn">
+            <i class="fas fa-bars"></i>
+        </button>
+    </header>
+
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <nav>
+            <ul class="sidebar-nav">
+                <li class="sidebar-item">
+                    <a href="index.html" class="sidebar-link">
+                        <i class="fas fa-home"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="voting.html" class="sidebar-link">
+                        <i class="fas fa-vote-yea"></i>
+                        <span>Current Elections</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="history.html" class="sidebar-link">
+                        <i class="fas fa-history"></i>
+                        <span>Voting History</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="candidates.html" class="sidebar-link active">
+                        <i class="fas fa-user-graduate"></i>
+                        <span>Candidates</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="results.html" class="sidebar-link">
+                        <i class="fas fa-poll"></i>
+                        <span>Results</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="#" class="sidebar-link">
+                        <i class="fas fa-user-shield"></i>
+                        <span>Admin Panel</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="#" class="sidebar-link">
+                        <i class="fas fa-cog"></i>
+                        <span>Settings</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="#" class="sidebar-link">
+                        <i class="fas fa-question-circle"></i>
+                        <span>Help & Support</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content" id="mainContent">
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1><i class="fas fa-user-graduate"></i> Candidates</h1>
+            <div class="election-selector">
+                <button class="election-dropdown">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span>Student Union Elections 2023</span>
+                    <i class="fas fa-chevron-down"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Candidate Filter -->
+        <div class="candidate-filter">
+            <div class="filter-tab active">All Candidates</div>
+            <div class="filter-tab">President</div>
+            <div class="filter-tab">Secretary General</div>
+            <div class="filter-tab">Treasurer</div>
+            <div class="filter-tab">Faculty Reps</div>
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" placeholder="Search candidates...">
+            </div>
+        </div>
+
+        <!-- Featured Candidate -->
+        <div class="featured-candidate">
+            <div class="featured-image">
+                <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=774&q=80" alt="Featured Candidate">
+                <div class="featured-party">Progressive Alliance</div>
+            </div>
+            <div class="featured-content">
+                <span class="featured-tag">Featured Candidate</span>
+                <h2 class="featured-name">John Mwangi</h2>
+                <h3 class="featured-position">Candidate for President</h3>
+                <div class="featured-course">
+                    <i class="fas fa-graduation-cap"></i>
+                    <span>BSc. Computer Science, 3rd Year</span>
+                </div>
+                <p class="featured-bio">
+                    John is a passionate leader with a vision to transform student life at Rongo University. 
+                    As current Faculty Representative for Science, he has championed improved lab facilities 
+                    and extended library hours. His platform focuses on student welfare, academic support, 
+                    and sustainable campus initiatives.
+                </p>
+                <div class="featured-stats">
+                    <div class="featured-stat">
+                        <div class="featured-stat-number">1,248</div>
+                        <div class="featured-stat-label">Votes</div>
+                    </div>
+                    <div class="featured-stat">
+                        <div class="featured-stat-number">87%</div>
+                        <div class="featured-stat-label">Approval</div>
+                    </div>
+                    <div class="featured-stat">
+                        <div class="featured-stat-number">24</div>
+                        <div class="featured-stat-label">Initiatives</div>
+                    </div>
+                </div>
+                <div class="candidate-actions">
+                    <button class="action-btn btn-primary">
+                        <i class="fas fa-vote-yea"></i> Vote Now
+                    </button>
+                    <button class="action-btn btn-outline">
+                        <i class="fas fa-file-alt"></i> View Manifesto
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Candidates Grid -->
+        <div class="candidates-grid">
+            <!-- Candidate 1 -->
+            <div class="candidate-card">
+                <div class="candidate-banner">
+                    <div class="candidate-party">Students First</div>
+                    <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Candidate" class="candidate-avatar">
+                </div>
+                <div class="candidate-content">
+                    <h3 class="candidate-name">Sarah Atieno</h3>
+                    <div class="candidate-position">Secretary General</div>
+                    <div class="candidate-course">BSc. Economics, 2nd Year</div>
+                    <p class="candidate-bio">
+                        Experienced in student governance with a focus on transparent communication 
+                        between administration and student body. Advocates for mental health support.
+                    </p>
+                    <div class="candidate-stats">
+                        <div class="stat-item">
+                            <div class="stat-number">842</div>
+                            <div class="stat-label">Votes</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">79%</div>
+                            <div class="stat-label">Approval</div>
+                        </div>
+                    </div>
+                    <div class="candidate-actions">
+                        <button class="action-btn btn-primary">
+                            <i class="fas fa-vote-yea"></i> Vote
+                        </button>
+                        <button class="action-btn btn-outline">
+                            <i class="fas fa-eye"></i> View
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Candidate 2 -->
+            <div class="candidate-card">
+                <div class="candidate-banner">
+                    <div class="candidate-party">Academic Front</div>
+                    <img src="https://randomuser.me/api/portraits/men/75.jpg" alt="Candidate" class="candidate-avatar">
+                </div>
+                <div class="candidate-content">
+                    <h3 class="candidate-name">James Kariuki</h3>
+                    <div class="candidate-position">Academic Board Rep</div>
+                    <div class="candidate-course">BA. Education, 4th Year</div>
+                    <p class="candidate-bio">
+                        Focused on curriculum improvements and fair assessment policies. 
+                        Former class representative with proven negotiation skills.
+                    </p>
+                    <div class="candidate-stats">
+                        <div class="stat-item">
+                            <div class="stat-number">723</div>
+                            <div class="stat-label">Votes</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">82%</div>
+                            <div class="stat-label">Approval</div>
+                        </div>
+                    </div>
+                    <div class="candidate-actions">
+                        <button class="action-btn btn-primary">
+                            <i class="fas fa-vote-yea"></i> Vote
+                        </button>
+                        <button class="action-btn btn-outline">
+                            <i class="fas fa-eye"></i> View
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Candidate 3 -->
+            <div class="candidate-card">
+                <div class="candidate-banner">
+                    <div class="candidate-party">Team Spirit</div>
+                    <img src="https://randomuser.me/api/portraits/women/63.jpg" alt="Candidate" class="candidate-avatar">
+                </div>
+                <div class="candidate-content">
+                    <h3 class="candidate-name">Grace Wambui</h3>
+                    <div class="candidate-position">Sports Captain</div>
+                    <div class="candidate-course">BSc. Sports Science, 3rd Year</div>
+                    <p class="candidate-bio">
+                        National volleyball player proposing expanded intramural programs and 
+                        better funding for varsity teams. Aims to make sports accessible to all.
+                    </p>
+                    <div class="candidate-stats">
+                        <div class="stat-item">
+                            <div class="stat-number">1,105</div>
+                            <div class="stat-label">Votes</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">91%</div>
+                            <div class="stat-label">Approval</div>
+                        </div>
+                    </div>
+                    <div class="candidate-actions">
+                        <button class="action-btn btn-primary">
+                            <i class="fas fa-vote-yea"></i> Vote
+                        </button>
+                        <button class="action-btn btn-outline">
+                            <i class="fas fa-eye"></i> View
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Candidate 4 -->
+            <div class="candidate-card">
+                <div class="candidate-banner">
+                    <div class="candidate-party">Progressive Alliance</div>
+                    <img src="https://randomuser.me/api/portraits/men/67.jpg" alt="Candidate" class="candidate-avatar">
+                </div>
+                <div class="candidate-content">
+                    <h3 class="candidate-name">David Omondi</h3>
+                    <div class="candidate-position">Science Faculty Rep</div>
+                    <div class="candidate-course">BSc. Biochemistry, 2nd Year</div>
+                    <p class="candidate-bio">
+                        Advocates for undergraduate research opportunities and modernized lab equipment. 
+                        Organized successful STEM outreach programs.
+                    </p>
+                    <div class="candidate-stats">
+                        <div class="stat-item">
+                            <div class="stat-number">658</div>
+                            <div class="stat-label">Votes</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">76%</div>
+                            <div class="stat-label">Approval</div>
+                        </div>
+                    </div>
+                    <div class="candidate-actions">
+                        <button class="action-btn btn-primary">
+                            <i class="fas fa-vote-yea"></i> Vote
+                        </button>
+                        <button class="action-btn btn-outline">
+                            <i class="fas fa-eye"></i> View
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Candidate 5 -->
+            <div class="candidate-card">
+                <div class="candidate-banner">
+                    <div class="candidate-party">Independent</div>
+                    <img src="https://randomuser.me/api/portraits/women/28.jpg" alt="Candidate" class="candidate-avatar">
+                </div>
+                <div class="candidate-content">
+                    <h3 class="candidate-name">Amina Mohammed</h3>
+                    <div class="candidate-position">Treasurer</div>
+                    <div class="candidate-course">BCom. Finance, 3rd Year</div>
+                    <p class="candidate-bio">
+                        Certified accountant proposing transparent budgeting and student club funding 
+                        reforms. Track record of fiscal responsibility in campus organizations.
+                    </p>
+                    <div class="candidate-stats">
+                        <div class="stat-item">
+                            <div class="stat-number">932</div>
+                            <div class="stat-label">Votes</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">85%</div>
+                            <div class="stat-label">Approval</div>
+                        </div>
+                    </div>
+                    <div class="candidate-actions">
+                        <button class="action-btn btn-primary">
+                            <i class="fas fa-vote-yea"></i> Vote
+                        </button>
+                        <button class="action-btn btn-outline">
+                            <i class="fas fa-eye"></i> View
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Candidate 6 -->
+            <div class="candidate-card">
+                <div class="candidate-banner">
+                    <div class="candidate-party">Arts Collective</div>
+                    <img src="https://randomuser.me/api/portraits/men/82.jpg" alt="Candidate" class="candidate-avatar">
+                </div>
+                <div class="candidate-content">
+                    <h3 class="candidate-name">Brian Otieno</h3>
+                    <div class="candidate-position">Arts Faculty Rep</div>
+                    <div class="candidate-course">BA. Literature, 2nd Year</div>
+                    <p class="candidate-bio">
+                        Founder of Creative Writing Club pushing for more arts funding and 
+                        interdisciplinary collaboration. Organizer of successful poetry slam events.
+                    </p>
+                    <div class="candidate-stats">
+                        <div class="stat-item">
+                            <div class="stat-number">587</div>
+                            <div class="stat-label">Votes</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">73%</div>
+                            <div class="stat-label">Approval</div>
+                        </div>
+                    </div>
+                    <div class="candidate-actions">
+                        <button class="action-btn btn-primary">
+                            <i class="fas fa-vote-yea"></i> Vote
+                        </button>
+                        <button class="action-btn btn-outline">
+                            <i class="fas fa-eye"></i> View
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pagination -->
+        <ul class="pagination">
+            <li class="page-item">
+                <a href="#" class="page-link disabled"><i class="fas fa-chevron-left"></i></a>
+            </li>
+            <li class="page-item">
+                <a href="#" class="page-link active">1</a>
+            </li>
+            <li class="page-item">
+                <a href="#" class="page-link">2</a>
+            </li>
+            <li class="page-item">
+                <a href="#" class="page-link">3</a>
+            </li>
+            <li class="page-item">
+                <a href="#" class="page-link"><i class="fas fa-chevron-right"></i></a>
+            </li>
+        </ul>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="social-links">
+                <a href="#" class="social-link"><i class="fab fa-facebook-f"></i></a>
+                <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+                <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
+                <a href="#" class="social-link"><i class="fab fa-linkedin-in"></i></a>
+            </div>
+            <p>© 2023 Rongo University Voting System. All rights reserved.</p>
+            <p>Meet your future leaders and make an informed decision.</p>
+        </footer>
+    </main>
+
+    <script>
+        // Mobile Menu Toggle
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const sidebar = document.getElementById('sidebar');
+        const mainContent = document.getElementById('mainContent');
+
+        mobileMenuBtn.addEventListener('click', () => {
+            sidebar.classList.toggle('active');
+            mobileMenuBtn.innerHTML = sidebar.classList.contains('active') 
+                ? '<i class="fas fa-times"></i>' 
+                : '<i class="fas fa-bars"></i>';
+        });
+
+        // Close sidebar when clicking on main content (on mobile)
+        mainContent.addEventListener('click', () => {
+            if (window.innerWidth <= 992 && sidebar.classList.contains('active')) {
+                sidebar.classList.remove('active');
+                mobileMenuBtn.innerHTML = '<i class="fas fa-bars"></i>';
+            }
+        });
+
+        // Filter tabs functionality
+        const filterTabs = document.querySelectorAll('.filter-tab');
+        
+        filterTabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                filterTabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                // Here you would filter candidates based on the selected tab
+            });
+        });
+
+        // Search functionality
+        const searchInput = document.querySelector('.search-box input');
+        const candidateCards = document.querySelectorAll('.candidate-card');
+        
+        searchInput.addEventListener('input', () => {
+            const searchTerm = searchInput.value.toLowerCase();
+            
+            candidateCards.forEach(card => {
+                const cardText = card.textContent.toLowerCase();
+                if (cardText.includes(searchTerm)) {
+                    card.style.display = '';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+
+        // Featured candidate rotation (example)
+        let featuredIndex = 0;
+        const featuredCandidates = [
+            {
+                name: "John Mwangi",
+                position: "Candidate for President",
+                party: "Progressive Alliance",
+                course: "BSc. Computer Science, 3rd Year",
+                votes: "1,248",
+                approval: "87%",
+                initiatives: "24",
+                image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=774&q=80",
+                bio: "John is a passionate leader with a vision to transform student life at Rongo University. As current Faculty Representative for Science, he has championed improved lab facilities and extended library hours. His platform focuses on student welfare, academic support, and sustainable campus initiatives."
+            },
+            {
+                name: "Sarah Atieno",
+                position: "Candidate for Secretary General",
+                party: "Students First",
+                course: "BSc. Economics, 2nd Year",
+                votes: "842",
+                approval: "79%",
+                initiatives: "18",
+                image: "https://randomuser.me/api/portraits/women/44.jpg",
+                bio: "Experienced in student governance with a focus on transparent communication between administration and student body. Advocates for mental health support and improved student services."
+            }
+        ];
+
+        function rotateFeaturedCandidate() {
+            featuredIndex = (featuredIndex + 1) % featuredCandidates.length;
+            const candidate = featuredCandidates[featuredIndex];
+            
+            document.querySelector('.featured-image img').src = candidate.image;
+            document.querySelector('.featured-party').textContent = candidate.party;
+            document.querySelector('.featured-name').textContent = candidate.name;
+            document.querySelector('.featured-position').textContent = candidate.position;
+            document.querySelector('.featured-course span').textContent = candidate.course;
+            document.querySelector('.featured-bio').textContent = candidate.bio;
+            document.querySelectorAll('.featured-stat-number')[0].textContent = candidate.votes;
+            document.querySelectorAll('.featured-stat-number')[1].textContent = candidate.approval;
+            document.querySelectorAll('.featured-stat-number')[2].textContent = candidate.initiatives;
+        }
+
+        // Rotate featured candidate every 10 seconds (optional)
+        // setInterval(rotateFeaturedCandidate, 10000);
+    </script>
+</body>
+</html>

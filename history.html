@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rongo University - Voting History</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #003366;
+            --secondary-color: #FFD700;
+            --accent-color: #E74C3C;
+            --light-color: #F8F9FA;
+            --dark-color: #343A40;
+            --success-color: #28A745;
+            --info-color: #17A2B8;
+            --transition-speed: 0.3s;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--light-color);
+            color: var(--dark-color);
+            overflow-x: hidden;
+        }
+
+        /* Header Styles */
+        .header {
+            background: linear-gradient(135deg, var(--primary-color), #001a33);
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            height: 70px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo img {
+            height: 110px;
+            width: auto;
+            animation: pulse 2s infinite;
+        }
+
+        .logo-text h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        .logo-text p {
+            font-size: 0.8rem;
+            opacity: 0.8;
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: 250px;
+            height: calc(100vh - 70px);
+            background: linear-gradient(180deg, var(--primary-color), #00264d);
+            position: fixed;
+            top: 70px;
+            left: 0;
+            overflow-y: auto;
+            transition: transform var(--transition-speed) ease;
+            z-index: 999;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Updated Sidebar Styles */
+        .sidebar-nav {
+            display: flex;
+            flex-direction: column;
+            padding: 1rem 0;
+        }
+
+        .sidebar-link {
+            display: flex;
+            align-items: center;
+            padding: 12px 20px;
+            color: rgba(255, 255, 255, 0.9);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all var(--transition-speed) ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .sidebar-link::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            transition: left 0.3s ease;
+        }
+
+        .sidebar-link:hover {
+            color: white;
+            background: rgba(255, 255, 255, 0.05);
+            padding-left: 25px;
+        }
+
+        .sidebar-link:hover::before {
+            left: 0;
+        }
+
+        .sidebar-link i {
+            margin-right: 10px;
+            font-size: 1.1rem;
+            width: 20px;
+            text-align: center;
+        }
+
+        .sidebar-link.active {
+            color: var(--secondary-color);
+            background: rgba(255, 215, 0, 0.1);
+            border-left: 4px solid var(--secondary-color);
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            margin-left: 250px;
+            margin-top: 70px;
+            padding: 2rem;
+            min-height: calc(100vh - 70px);
+            transition: margin-left var(--transition-speed) ease;
+        }
+
+        /* Page Header */
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #eee;
+        }
+
+        .page-header h1 {
+            font-size: 2rem;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .page-header h1 i {
+            color: var(--secondary-color);
+        }
+
+        .search-filter {
+            display: flex;
+            gap: 15px;
+        }
+
+        .search-box {
+            position: relative;
+        }
+
+        .search-box input {
+            padding: 10px 15px 10px 35px;
+            border-radius: 50px;
+            border: 1px solid #ddd;
+            width: 250px;
+            transition: all 0.3s ease;
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(0, 51, 102, 0.1);
+        }
+
+        .search-box i {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #777;
+        }
+
+        .filter-dropdown {
+            position: relative;
+        }
+
+        .filter-btn {
+            background: white;
+            border: 1px solid #ddd;
+            padding: 10px 15px;
+            border-radius: 50px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .filter-btn:hover {
+            border-color: var(--primary-color);
+        }
+
+        .filter-btn i {
+            color: var(--primary-color);
+        }
+
+        /* Voting History Table */
+        .history-container {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+
+        .history-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .history-table thead {
+            background: linear-gradient(135deg, var(--primary-color), #001a33);
+            color: white;
+        }
+
+        .history-table th {
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .history-table th:first-child {
+            border-top-left-radius: 10px;
+        }
+
+        .history-table th:last-child {
+            border-top-right-radius: 10px;
+        }
+
+        .history-table td {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            vertical-align: middle;
+        }
+
+        .history-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .history-table tbody tr:hover {
+            background-color: rgba(0, 51, 102, 0.03);
+        }
+
+        .election-title {
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .election-date {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .position {
+            background: rgba(0, 51, 102, 0.1);
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 0.9rem;
+            display: inline-block;
+        }
+
+        .candidate-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .candidate-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--secondary-color);
+        }
+
+        .candidate-name {
+            font-weight: 500;
+        }
+
+        .candidate-party {
+            font-size: 0.8rem;
+            color: #666;
+        }
+
+        .vote-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 5px 10px;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .vote-status.success {
+            background: rgba(40, 167, 69, 0.1);
+            color: var(--success-color);
+        }
+
+        .vote-status.warning {
+            background: rgba(255, 193, 7, 0.1);
+            color: #ffc107;
+        }
+
+        .vote-status.danger {
+            background: rgba(220, 53, 69, 0.1);
+            color: #dc3545;
+        }
+
+        .action-btn {
+            background: none;
+            border: none;
+            color: var(--primary-color);
+            cursor: pointer;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+        }
+
+        .action-btn:hover {
+            color: var(--secondary-color);
+            transform: scale(1.1);
+        }
+
+        /* Pagination */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 5px;
+            margin-top: 2rem;
+        }
+
+        .page-item {
+            list-style: none;
+        }
+
+        .page-link {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 5px;
+            background: white;
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 500;
+            border: 1px solid #ddd;
+            transition: all 0.3s ease;
+        }
+
+        .page-link:hover {
+            background: rgba(0, 51, 102, 0.1);
+        }
+
+        .page-link.active {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        .page-link.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* No History Message */
+        .no-history {
+            text-align: center;
+            padding: 3rem;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .no-history i {
+            font-size: 3rem;
+            color: var(--secondary-color);
+            margin-bottom: 1rem;
+        }
+
+        .no-history h3 {
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .no-history p {
+            color: #666;
+            margin-bottom: 1.5rem;
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--dark-color);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+            border-radius: 10px;
+            margin-top: 2rem;
+        }
+
+        .footer p {
+            margin-bottom: 1rem;
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 1rem;
+        }
+
+        .social-link {
+            color: white;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+        }
+
+        .social-link:hover {
+            color: var(--secondary-color);
+            transform: translateY(-3px);
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 1200px) {
+            .history-table {
+                display: block;
+                overflow-x: auto;
+                white-space: nowrap;
+            }
+        }
+
+        @media (max-width: 992px) {
+            .sidebar {
+                transform: translateX(-100%);
+                position: fixed;
+                top: 70px;
+                left: 0;
+                width: 280px;
+                height: calc(100vh - 70px);
+                z-index: 999;
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .mobile-menu-btn {
+                display: block;
+            }
+
+            .page-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+
+            .search-filter {
+                width: 100%;
+                flex-direction: column;
+            }
+
+            .search-box input {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .history-table td, .history-table th {
+                padding: 10px;
+            }
+
+            .candidate-info {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 5px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .header {
+                padding: 1rem;
+            }
+
+            .logo-text h1 {
+                font-size: 1.2rem;
+            }
+
+            .logo-text p {
+                font-size: 0.7rem;
+            }
+
+            .page-header h1 {
+                font-size: 1.5rem;
+            }
+
+            .pagination {
+                flex-wrap: wrap;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="logo">
+            <img src="images/Logo.png" alt="Rongo University Logo" id="university-logo">
+            <div class="logo-text">
+                <h1>Rongo University</h1>
+                <p>Campus Voting System</p>
+            </div>
+        </div>
+        <button class="mobile-menu-btn" id="mobileMenuBtn">
+            <i class="fas fa-bars"></i>
+        </button>
+    </header>
+
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <nav>
+            <ul class="sidebar-nav">
+                <li class="sidebar-item">
+                    <a href="index.html" class="sidebar-link">
+                        <i class="fas fa-home"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="voting.html" class="sidebar-link">
+                        <i class="fas fa-vote-yea"></i>
+                        <span>Current Elections</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="voting-history.html" class="sidebar-link active">
+                        <i class="fas fa-history"></i>
+                        <span>Voting History</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="candidates.html" class="sidebar-link">
+                        <i class="fas fa-user-graduate"></i>
+                        <span>Candidates</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="results.html" class="sidebar-link">
+                        <i class="fas fa-poll"></i>
+                        <span>Results</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="#" class="sidebar-link">
+                        <i class="fas fa-user-shield"></i>
+                        <span>Admin Panel</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="#" class="sidebar-link">
+                        <i class="fas fa-cog"></i>
+                        <span>Settings</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="#" class="sidebar-link">
+                        <i class="fas fa-question-circle"></i>
+                        <span>Help & Support</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content" id="mainContent">
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1><i class="fas fa-history"></i> Voting History</h1>
+            <div class="search-filter">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Search elections...">
+                </div>
+                <div class="filter-dropdown">
+                    <button class="filter-btn">
+                        <i class="fas fa-filter"></i>
+                        <span>Filter</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Voting History Table -->
+        <div class="history-container">
+            <table class="history-table">
+                <thead>
+                    <tr>
+                        <th>Election</th>
+                        <th>Position</th>
+                        <th>Candidate Voted</th>
+                        <th>Date Voted</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <div class="election-title">Student Union Elections 2023</div>
+                            <div class="election-date">May 15, 2023 - May 17, 2023</div>
+                        </td>
+                        <td><span class="position">President</span></td>
+                        <td>
+                            <div class="candidate-info">
+                                <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Candidate" class="candidate-avatar">
+                                <div>
+                                    <div class="candidate-name">John Mwangi</div>
+                                    <div class="candidate-party">Progressive Alliance</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>May 16, 2023<br>10:24 AM</td>
+                        <td><span class="vote-status success"><i class="fas fa-check-circle"></i> Verified</span></td>
+                        <td>
+                            <button class="action-btn" title="View Details"><i class="fas fa-eye"></i></button>
+                            <button class="action-btn" title="Print Receipt"><i class="fas fa-print"></i></button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="election-title">Student Union Elections 2023</div>
+                            <div class="election-date">May 15, 2023 - May 17, 2023</div>
+                        </td>
+                        <td><span class="position">Secretary General</span></td>
+                        <td>
+                            <div class="candidate-info">
+                                <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Candidate" class="candidate-avatar">
+                                <div>
+                                    <div class="candidate-name">Sarah Atieno</div>
+                                    <div class="candidate-party">Students First</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>May 16, 2023<br>10:24 AM</td>
+                        <td><span class="vote-status success"><i class="fas fa-check-circle"></i> Verified</span></td>
+                        <td>
+                            <button class="action-btn" title="View Details"><i class="fas fa-eye"></i></button>
+                            <button class="action-btn" title="Print Receipt"><i class="fas fa-print"></i></button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="election-title">Faculty Representatives 2023</div>
+                            <div class="election-date">March 3, 2023 - March 5, 2023</div>
+                        </td>
+                        <td><span class="position">Science Rep</span></td>
+                        <td>
+                            <div class="candidate-info">
+                                <img src="https://randomuser.me/api/portraits/men/67.jpg" alt="Candidate" class="candidate-avatar">
+                                <div>
+                                    <div class="candidate-name">David Omondi</div>
+                                    <div class="candidate-party">Independent</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>March 4, 2023<br>2:15 PM</td>
+                        <td><span class="vote-status success"><i class="fas fa-check-circle"></i> Verified</span></td>
+                        <td>
+                            <button class="action-btn" title="View Details"><i class="fas fa-eye"></i></button>
+                            <button class="action-btn" title="Print Receipt"><i class="fas fa-print"></i></button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="election-title">Sports Committee 2022</div>
+                            <div class="election-date">October 10, 2022 - October 12, 2022</div>
+                        </td>
+                        <td><span class="position">Sports Captain</span></td>
+                        <td>
+                            <div class="candidate-info">
+                                <img src="https://randomuser.me/api/portraits/women/63.jpg" alt="Candidate" class="candidate-avatar">
+                                <div>
+                                    <div class="candidate-name">Grace Wambui</div>
+                                    <div class="candidate-party">Team Spirit</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>October 11, 2022<br>9:45 AM</td>
+                        <td><span class="vote-status warning"><i class="fas fa-exclamation-circle"></i> Pending Review</span></td>
+                        <td>
+                            <button class="action-btn" title="View Details"><i class="fas fa-eye"></i></button>
+                            <button class="action-btn" title="Print Receipt"><i class="fas fa-print"></i></button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="election-title">Academic Board 2022</div>
+                            <div class="election-date">August 22, 2022 - August 24, 2022</div>
+                        </td>
+                        <td><span class="position">Student Rep</span></td>
+                        <td>
+                            <div class="candidate-info">
+                                <img src="https://randomuser.me/api/portraits/men/75.jpg" alt="Candidate" class="candidate-avatar">
+                                <div>
+                                    <div class="candidate-name">James Kariuki</div>
+                                    <div class="candidate-party">Academic Front</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>August 23, 2022<br>4:30 PM</td>
+                        <td><span class="vote-status danger"><i class="fas fa-times-circle"></i> Disputed</span></td>
+                        <td>
+                            <button class="action-btn" title="View Details"><i class="fas fa-eye"></i></button>
+                            <button class="action-btn" title="Print Receipt"><i class="fas fa-print"></i></button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Pagination -->
+        <ul class="pagination">
+            <li class="page-item">
+                <a href="#" class="page-link disabled"><i class="fas fa-chevron-left"></i></a>
+            </li>
+            <li class="page-item">
+                <a href="#" class="page-link active">1</a>
+            </li>
+            <li class="page-item">
+                <a href="#" class="page-link">2</a>
+            </li>
+            <li class="page-item">
+                <a href="#" class="page-link">3</a>
+            </li>
+            <li class="page-item">
+                <a href="#" class="page-link"><i class="fas fa-chevron-right"></i></a>
+            </li>
+        </ul>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="social-links">
+                <a href="#" class="social-link"><i class="fab fa-facebook-f"></i></a>
+                <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+                <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
+                <a href="#" class="social-link"><i class="fab fa-linkedin-in"></i></a>
+            </div>
+            <p>© 2023 Rongo University Voting System. All rights reserved.</p>
+            <p>Your voting history is securely stored on our blockchain system.</p>
+        </footer>
+    </main>
+
+    <script>
+        // Mobile Menu Toggle
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const sidebar = document.getElementById('sidebar');
+        const mainContent = document.getElementById('mainContent');
+
+        mobileMenuBtn.addEventListener('click', () => {
+            sidebar.classList.toggle('active');
+            mobileMenuBtn.innerHTML = sidebar.classList.contains('active') 
+                ? '<i class="fas fa-times"></i>' 
+                : '<i class="fas fa-bars"></i>';
+        });
+
+        // Close sidebar when clicking on main content (on mobile)
+        mainContent.addEventListener('click', () => {
+            if (window.innerWidth <= 992 && sidebar.classList.contains('active')) {
+                sidebar.classList.remove('active');
+                mobileMenuBtn.innerHTML = '<i class="fas fa-bars"></i>';
+            }
+        });
+
+        // Search functionality
+        const searchInput = document.querySelector('.search-box input');
+        const tableRows = document.querySelectorAll('.history-table tbody tr');
+
+        searchInput.addEventListener('input', () => {
+            const searchTerm = searchInput.value.toLowerCase();
+            
+            tableRows.forEach(row => {
+                const rowText = row.textContent.toLowerCase();
+                if (rowText.includes(searchTerm)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,1008 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rongo University - Help & Support</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #003366;
+            --secondary-color: #FFD700;
+            --accent-color: #E74C3C;
+            --light-color: #F8F9FA;
+            --dark-color: #343A40;
+            --success-color: #28A745;
+            --info-color: #17A2B8;
+            --transition-speed: 0.3s;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--light-color);
+            color: var(--dark-color);
+            overflow-x: hidden;
+        }
+
+        /* Header Styles */
+        .header {
+            background: linear-gradient(135deg, var(--primary-color), #001a33);
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            height: 70px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo img {
+            height: 110px;
+            width: auto;
+            animation: pulse 2s infinite;
+        }
+
+        .logo-text h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        .logo-text p {
+            font-size: 0.8rem;
+            opacity: 0.8;
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: 250px;
+            height: calc(100vh - 70px);
+            background: linear-gradient(180deg, var(--primary-color), #00264d);
+            position: fixed;
+            top: 70px;
+            left: 0;
+            overflow-y: auto;
+            transition: transform var(--transition-speed) ease;
+            z-index: 999;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Updated Sidebar Styles */
+        .sidebar-nav {
+            display: flex;
+            flex-direction: column;
+            padding: 1rem 0;
+        }
+
+        .sidebar-link {
+            display: flex;
+            align-items: center;
+            padding: 12px 20px;
+            color: rgba(255, 255, 255, 0.9);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all var(--transition-speed) ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .sidebar-link::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            transition: left 0.3s ease;
+        }
+
+        .sidebar-link:hover {
+            color: white;
+            background: rgba(255, 255, 255, 0.05);
+            padding-left: 25px;
+        }
+
+        .sidebar-link:hover::before {
+            left: 0;
+        }
+
+        .sidebar-link i {
+            margin-right: 10px;
+            font-size: 1.1rem;
+            width: 20px;
+            text-align: center;
+        }
+
+        .sidebar-link.active {
+            color: var(--secondary-color);
+            background: rgba(255, 215, 0, 0.1);
+            border-left: 4px solid var(--secondary-color);
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            margin-left: 250px;
+            margin-top: 70px;
+            padding: 2rem;
+            min-height: calc(100vh - 70px);
+            transition: margin-left var(--transition-speed) ease;
+        }
+
+        /* Help Header */
+        .help-header {
+            background: linear-gradient(rgba(0, 51, 102, 0.8), rgba(0, 26, 51, 0.9)), url('https://images.unsplash.com/photo-1521791055366-0d553872125f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1469&q=80');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 3rem 2rem;
+            border-radius: 10px;
+            text-align: center;
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .help-header::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at center, transparent 0%, rgba(0, 0, 0, 0.5) 100%);
+            z-index: 1;
+        }
+
+        .help-header-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .help-header h1 {
+            font-size: 2.2rem;
+            margin-bottom: 1rem;
+        }
+
+        .help-header p {
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Search Help */
+        .help-search {
+            max-width: 600px;
+            margin: 0 auto 3rem;
+            position: relative;
+        }
+
+        .help-search input {
+            width: 100%;
+            padding: 15px 20px 15px 50px;
+            border-radius: 50px;
+            border: none;
+            font-size: 1rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .help-search input:focus {
+            outline: none;
+            box-shadow: 0 5px 15px rgba(0, 51, 102, 0.2);
+        }
+
+        .help-search i {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--primary-color);
+        }
+
+        /* Help Sections */
+        .help-sections {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .help-card {
+            background: white;
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .help-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .help-card-icon {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+        }
+
+        .help-card h3 {
+            font-size: 1.3rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        .help-card p {
+            color: #666;
+            line-height: 1.5;
+        }
+
+        /* FAQ Section */
+        .faq-section {
+            background: white;
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            margin-bottom: 2rem;
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .faq-item {
+            margin-bottom: 1rem;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 1rem;
+        }
+
+        .faq-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .faq-question {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .faq-question i {
+            transition: transform 0.3s ease;
+        }
+
+        .faq-question.active i {
+            transform: rotate(180deg);
+        }
+
+        .faq-answer {
+            color: #555;
+            line-height: 1.6;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .faq-answer.active {
+            max-height: 500px;
+            padding-top: 0.5rem;
+        }
+
+        /* Contact Section */
+        .contact-section {
+            background: white;
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            margin-bottom: 2rem;
+        }
+
+        .contact-methods {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 1.5rem;
+        }
+
+        .contact-card {
+            background: rgba(0, 51, 102, 0.05);
+            border-radius: 10px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .contact-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .contact-icon {
+            font-size: 2rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        .contact-card h3 {
+            font-size: 1.2rem;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .contact-info {
+            color: #555;
+            line-height: 1.6;
+        }
+
+        .contact-info a {
+            color: var(--primary-color);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .contact-info a:hover {
+            color: var(--secondary-color);
+            text-decoration: underline;
+        }
+
+        /* Support Form */
+        .support-form {
+            background: white;
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            margin-bottom: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--primary-color);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(0, 51, 102, 0.1);
+        }
+
+        textarea.form-control {
+            min-height: 150px;
+            resize: vertical;
+        }
+
+        .submit-btn {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .submit-btn:hover {
+            background: #00264d;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 10px rgba(0, 51, 102, 0.2);
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--dark-color);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+            border-radius: 10px;
+            margin-top: 2rem;
+        }
+
+        .footer p {
+            margin-bottom: 1rem;
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 1rem;
+        }
+
+        .social-link {
+            color: white;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+        }
+
+        .social-link:hover {
+            color: var(--secondary-color);
+            transform: translateY(-3px);
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 992px) {
+            .sidebar {
+                transform: translateX(-100%);
+                position: fixed;
+                top: 70px;
+                left: 0;
+                width: 280px;
+                height: calc(100vh - 70px);
+                z-index: 999;
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .mobile-menu-btn {
+                display: block;
+            }
+
+            .help-header h1 {
+                font-size: 1.8rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .help-sections {
+                grid-template-columns: 1fr;
+            }
+
+            .contact-methods {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .header {
+                padding: 1rem;
+            }
+
+            .logo-text h1 {
+                font-size: 1.2rem;
+            }
+
+            .logo-text p {
+                font-size: 0.7rem;
+            }
+
+            .help-header {
+                padding: 2rem 1rem;
+            }
+
+            .help-header h1 {
+                font-size: 1.5rem;
+            }
+
+            .section-title {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="logo">
+            <img src="images/Logo.png" alt="Rongo University Logo" id="university-logo">
+            <div class="logo-text">
+                <h1>Rongo University</h1>
+                <p>Campus Voting System</p>
+            </div>
+        </div>
+        <button class="mobile-menu-btn" id="mobileMenuBtn">
+            <i class="fas fa-bars"></i>
+        </button>
+    </header>
+
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <nav>
+            <ul class="sidebar-nav">
+                <li class="sidebar-item">
+                    <a href="index.html" class="sidebar-link">
+                        <i class="fas fa-home"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="voting.html" class="sidebar-link">
+                        <i class="fas fa-vote-yea"></i>
+                        <span>Current Elections</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="voting-history.html" class="sidebar-link">
+                        <i class="fas fa-history"></i>
+                        <span>Voting History</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="candidates.html" class="sidebar-link">
+                        <i class="fas fa-user-graduate"></i>
+                        <span>Candidates</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="results.html" class="sidebar-link">
+                        <i class="fas fa-poll"></i>
+                        <span>Results</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="#" class="sidebar-link">
+                        <i class="fas fa-user-shield"></i>
+                        <span>Admin Panel</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="#" class="sidebar-link">
+                        <i class="fas fa-cog"></i>
+                        <span>Settings</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="help.html" class="sidebar-link active">
+                        <i class="fas fa-question-circle"></i>
+                        <span>Help & Support</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content" id="mainContent">
+        <!-- Help Header -->
+        <section class="help-header">
+            <div class="help-header-content">
+                <h1>Help & Support Center</h1>
+                <p>Find answers to common questions, troubleshoot issues, or contact our support team for assistance with the voting system.</p>
+            </div>
+        </section>
+
+        <!-- Search Help -->
+        <div class="help-search">
+            <i class="fas fa-search"></i>
+            <input type="text" placeholder="Search help articles...">
+        </div>
+
+        <!-- Help Sections -->
+        <div class="help-sections">
+            <div class="help-card" onclick="location.href='#faq'">
+                <div class="help-card-icon">
+                    <i class="fas fa-question-circle"></i>
+                </div>
+                <h3>FAQs</h3>
+                <p>Find answers to frequently asked questions about voting procedures, eligibility, and system usage.</p>
+            </div>
+            <div class="help-card" onclick="location.href='#troubleshooting'">
+                <div class="help-card-icon">
+                    <i class="fas fa-tools"></i>
+                </div>
+                <h3>Troubleshooting</h3>
+                <p>Solutions for common technical issues you might encounter while using the voting system.</p>
+            </div>
+            <div class="help-card" onclick="location.href='#contact'">
+                <div class="help-card-icon">
+                    <i class="fas fa-headset"></i>
+                </div>
+                <h3>Contact Support</h3>
+                <p>Get in touch with our support team for personalized assistance with any issues.</p>
+            </div>
+        </div>
+
+        <!-- FAQ Section -->
+        <div class="faq-section" id="faq">
+            <h2 class="section-title">
+                <i class="fas fa-question-circle"></i> Frequently Asked Questions
+            </h2>
+            
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFAQ(this)">
+                    <span>How do I vote in the upcoming elections?</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    <p>To vote in the elections:</p>
+                    <ol>
+                        <li>Log in to the voting system using your student credentials</li>
+                        <li>Navigate to the "Current Elections" section</li>
+                        <li>Select each position and choose your preferred candidate</li>
+                        <li>Review your selections and submit your vote</li>
+                        <li>You'll receive a confirmation receipt with your voting details</li>
+                    </ol>
+                </div>
+            </div>
+            
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFAQ(this)">
+                    <span>Is my vote anonymous and secure?</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    <p>Yes, our voting system uses blockchain technology to ensure:</p>
+                    <ul>
+                        <li>Complete anonymity - your selections cannot be linked to your identity</li>
+                        <li>Tamper-proof security - votes cannot be altered once cast</li>
+                        <li>Verifiability - you can confirm your vote was counted without revealing your choice</li>
+                    </ul>
+                    <p>Your student credentials are only used to verify eligibility, not to track your votes.</p>
+                </div>
+            </div>
+            
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFAQ(this)">
+                    <span>What should I do if I encounter technical issues while voting?</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    <p>If you experience technical difficulties:</p>
+                    <ol>
+                        <li>Refresh the page and try again</li>
+                        <li>Clear your browser cache and cookies</li>
+                        <li>Try using a different browser (Chrome or Firefox recommended)</li>
+                        <li>Ensure you have a stable internet connection</li>
+                        <li>If issues persist, contact our support team immediately</li>
+                    </ol>
+                    <p>Note: The system will preserve your selections if you need to refresh or restart.</p>
+                </div>
+            </div>
+            
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFAQ(this)">
+                    <span>Can I change my vote after submitting?</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    <p>No, for security and integrity reasons, votes cannot be changed once submitted. This ensures:</p>
+                    <ul>
+                        <li>Prevention of vote selling or coercion</li>
+                        <li>Maintenance of election integrity</li>
+                        <li>Consistency with physical voting procedures</li>
+                    </ul>
+                    <p>You can review your selections carefully before final submission.</p>
+                </div>
+            </div>
+            
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFAQ(this)">
+                    <span>How can I verify that my vote was counted?</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    <p>After voting, you'll receive:</p>
+                    <ul>
+                        <li>A confirmation receipt with a unique transaction ID</li>
+                        <li>The option to print or save your receipt</li>
+                        <li>Access to view your voting history (without revealing your selections)</li>
+                    </ul>
+                    <p>Your transaction ID can be used to verify your vote was included in the final count while maintaining anonymity.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Troubleshooting Section -->
+        <div class="faq-section" id="troubleshooting">
+            <h2 class="section-title">
+                <i class="fas fa-tools"></i> Troubleshooting Guide
+            </h2>
+            
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFAQ(this)">
+                    <span>I can't log in to the voting system</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    <p>If you're having trouble logging in:</p>
+                    <ol>
+                        <li>Ensure you're using your correct student ID and password</li>
+                        <li>Check that your account is active (not suspended or graduated)</li>
+                        <li>Try resetting your password if you've forgotten it</li>
+                        <li>Make sure you're trying to log in during the official voting period</li>
+                        <li>Contact IT support if you suspect your account has issues</li>
+                    </ol>
+                </div>
+            </div>
+            
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFAQ(this)">
+                    <span>The page is loading slowly or not displaying properly</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    <p>For performance or display issues:</p>
+                    <ul>
+                        <li><strong>Check your internet connection</strong> - switch to a more stable network if possible</li>
+                        <li><strong>Update your browser</strong> - use the latest version of Chrome, Firefox, or Edge</li>
+                        <li><strong>Clear cache and cookies</strong> - this often resolves display issues</li>
+                        <li><strong>Try a different device</strong> - switch to a computer if using a phone, or vice versa</li>
+                        <li><strong>Disable browser extensions</strong> - some ad blockers or privacy tools may interfere</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFAQ(this)">
+                    <span>I'm getting an error message when trying to vote</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    <p>Common error messages and solutions:</p>
+                    <table style="width: 100%; border-collapse: collapse; margin: 1rem 0;">
+                        <thead>
+                            <tr style="background: rgba(0, 51, 102, 0.1);">
+                                <th style="padding: 10px; text-align: left; border-bottom: 1px solid #ddd;">Error</th>
+                                <th style="padding: 10px; text-align: left; border-bottom: 1px solid #ddd;">Solution</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td style="padding: 10px; border-bottom: 1px solid #eee;">"Voting period has not started"</td>
+                                <td style="padding: 10px; border-bottom: 1px solid #eee;">Check the election dates and try again during the official voting period</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 10px; border-bottom: 1px solid #eee;">"You have already voted"</td>
+                                <td style="padding: 10px; border-bottom: 1px solid #eee;">Each student can only vote once per election</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 10px; border-bottom: 1px solid #eee;">"Required fields not completed"</td>
+                                <td style="padding: 10px; border-bottom: 1px solid #eee;">Ensure you've selected candidates for all required positions</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 10px;">"System timeout"</td>
+                                <td style="padding: 10px;">Refresh the page and start again (your progress may be saved)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <p>For other errors, note the exact message and contact support.</p>
+                </div>
+            </div>
+            
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFAQ(this)">
+                    <span>I didn't receive my voting receipt</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    <p>If you don't receive your receipt after voting:</p>
+                    <ol>
+                        <li>Check your spam/junk folder in your email</li>
+                        <li>Verify you provided the correct email address</li>
+                        <li>Look in your voting history - the receipt may be available there</li>
+                        <li>Wait a few minutes - sometimes there's a slight delay</li>
+                        <li>If still missing, contact support with your voting details</li>
+                    </ol>
+                    <p>Note: You can always print/save the receipt displayed immediately after voting.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Contact Section -->
+        <div class="contact-section" id="contact">
+            <h2 class="section-title">
+                <i class="fas fa-headset"></i> Contact Support
+            </h2>
+            <p>Can't find what you're looking for? Our support team is ready to help with any questions or issues you may have.</p>
+            
+            <div class="contact-methods">
+                <div class="contact-card">
+                    <div class="contact-icon">
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    <h3>Email Support</h3>
+                    <div class="contact-info">
+                        <p>Send us an email and we'll respond within 24 hours:</p>
+                        <p><a href="mailto:voting-support@rongo.edu">voting-support@rongo.edu</a></p>
+                    </div>
+                </div>
+                
+                <div class="contact-card">
+                    <div class="contact-icon">
+                        <i class="fas fa-phone-alt"></i>
+                    </div>
+                    <h3>Phone Support</h3>
+                    <div class="contact-info">
+                        <p>Call our dedicated support line during business hours:</p>
+                        <p><a href="tel:+254712345678">+254 712 345 678</a></p>
+                        <p>Monday-Friday, 8:00 AM - 5:00 PM</p>
+                    </div>
+                </div>
+                
+                <div class="contact-card">
+                    <div class="contact-icon">
+                        <i class="fas fa-map-marker-alt"></i>
+                    </div>
+                    <h3>In-Person Help</h3>
+                    <div class="contact-info">
+                        <p>Visit the IT Help Desk in the Administration Building:</p>
+                        <p>Room 105, Ground Floor</p>
+                        <p>Open weekdays 8:00 AM - 4:00 PM</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Support Form -->
+        <div class="support-form">
+            <h2 class="section-title">
+                <i class="fas fa-comment-dots"></i> Send Us a Message
+            </h2>
+            <p>Fill out the form below and our support team will get back to you as soon as possible.</p>
+            
+            <form id="supportForm">
+                <div class="form-group">
+                    <label for="name">Full Name</label>
+                    <input type="text" id="name" class="form-control" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" class="form-control" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="studentId">Student ID</label>
+                    <input type="text" id="studentId" class="form-control">
+                </div>
+                
+                <div class="form-group">
+                    <label for="issueType">Issue Type</label>
+                    <select id="issueType" class="form-control" required>
+                        <option value="">Select an issue type</option>
+                        <option value="login">Login Problems</option>
+                        <option value="voting">Voting Issues</option>
+                        <option value="technical">Technical Difficulties</option>
+                        <option value="eligibility">Eligibility Questions</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="message">Message</label>
+                    <textarea id="message" class="form-control" required></textarea>
+                </div>
+                
+                <button type="submit" class="submit-btn">
+                    <i class="fas fa-paper-plane"></i> Send Message
+                </button>
+            </form>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="social-links">
+                <a href="#" class="social-link"><i class="fab fa-facebook-f"></i></a>
+                <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+                <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
+                <a href="#" class="social-link"><i class="fab fa-linkedin-in"></i></a>
+            </div>
+            <p>© 2023 Rongo University Voting System. All rights reserved.</p>
+            <p>Need help? Contact us anytime at voting-support@rongo.edu</p>
+        </footer>
+    </main>
+
+    <script>
+        // Mobile Menu Toggle
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const sidebar = document.getElementById('sidebar');
+        const mainContent = document.getElementById('mainContent');
+
+        mobileMenuBtn.addEventListener('click', () => {
+            sidebar.classList.toggle('active');
+            mobileMenuBtn.innerHTML = sidebar.classList.contains('active') 
+                ? '<i class="fas fa-times"></i>' 
+                : '<i class="fas fa-bars"></i>';
+        });
+
+        // Close sidebar when clicking on main content (on mobile)
+        mainContent.addEventListener('click', () => {
+            if (window.innerWidth <= 992 && sidebar.classList.contains('active')) {
+                sidebar.classList.remove('active');
+                mobileMenuBtn.innerHTML = '<i class="fas fa-bars"></i>';
+            }
+        });
+
+        // FAQ toggle functionality
+        function toggleFAQ(element) {
+            const answer = element.nextElementSibling;
+            element.classList.toggle('active');
+            answer.classList.toggle('active');
+        }
+
+        // Form submission
+        document.getElementById('supportForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // In a real app, this would send the form data to a server
+            alert('Thank you for your message. Our support team will respond as soon as possible.');
+            this.reset();
+        });
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
+</body>
+</html>

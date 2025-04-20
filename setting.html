@@ -1,0 +1,926 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rongo University - Settings</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #003366;
+            --secondary-color: #FFD700;
+            --accent-color: #E74C3C;
+            --light-color: #F8F9FA;
+            --dark-color: #343A40;
+            --success-color: #28A745;
+            --info-color: #17A2B8;
+            --transition-speed: 0.3s;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--light-color);
+            color: var(--dark-color);
+            overflow-x: hidden;
+        }
+
+        /* Header Styles */
+        .header {
+            background: linear-gradient(135deg, var(--primary-color), #001a33);
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            height: 70px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo img {
+            height: 110px;
+            width: auto;
+            animation: pulse 2s infinite;
+        }
+
+        .logo-text h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        .logo-text p {
+            font-size: 0.8rem;
+            opacity: 0.8;
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: 250px;
+            height: calc(100vh - 70px);
+            background: linear-gradient(180deg, var(--primary-color), #00264d);
+            position: fixed;
+            top: 70px;
+            left: 0;
+            overflow-y: auto;
+            transition: transform var(--transition-speed) ease;
+            z-index: 999;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .sidebar-nav {
+            display: flex;
+            flex-direction: column;
+            padding: 1rem 0;
+        }
+
+        .sidebar-link {
+            display: flex;
+            align-items: center;
+            padding: 12px 20px;
+            color: rgba(255, 255, 255, 0.9);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all var(--transition-speed) ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .sidebar-link::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            transition: left 0.3s ease;
+        }
+
+        .sidebar-link:hover {
+            color: white;
+            background: rgba(255, 255, 255, 0.05);
+            padding-left: 25px;
+        }
+
+        .sidebar-link:hover::before {
+            left: 0;
+        }
+
+        .sidebar-link i {
+            margin-right: 10px;
+            font-size: 1.1rem;
+            width: 20px;
+            text-align: center;
+        }
+
+        .sidebar-link.active {
+            color: var(--secondary-color);
+            background: rgba(255, 215, 0, 0.1);
+            border-left: 4px solid var(--secondary-color);
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            margin-left: 250px;
+            margin-top: 70px;
+            padding: 2rem;
+            min-height: calc(100vh - 70px);
+            transition: margin-left var(--transition-speed) ease;
+        }
+
+        /* Settings Header */
+        .settings-header {
+            background: linear-gradient(rgba(0, 51, 102, 0.8), rgba(0, 26, 51, 0.9)), url('https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 3rem 2rem;
+            border-radius: 10px;
+            text-align: center;
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .settings-header::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at center, transparent 0%, rgba(0, 0, 0, 0.5) 100%);
+            z-index: 1;
+        }
+
+        .settings-header-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .settings-header h1 {
+            font-size: 2.2rem;
+            margin-bottom: 1rem;
+        }
+
+        .settings-header p {
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Settings Sections */
+        .settings-sections {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .settings-card {
+            background: white;
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .settings-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .settings-card-icon {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+        }
+
+        .settings-card h3 {
+            font-size: 1.3rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        .settings-card p {
+            color: #666;
+            line-height: 1.5;
+        }
+
+        /* Account Settings */
+        .account-section {
+            background: white;
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            margin-bottom: 2rem;
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Settings Form */
+        .settings-form {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--primary-color);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(0, 51, 102, 0.1);
+        }
+
+        .form-actions {
+            grid-column: span 2;
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .btn {
+            padding: 12px 25px;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            border: none;
+        }
+
+        .btn-primary {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #00264d;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 10px rgba(0, 51, 102, 0.2);
+        }
+
+        .btn-secondary {
+            background: #e9ecef;
+            color: var(--dark-color);
+        }
+
+        .btn-secondary:hover {
+            background: #dee2e6;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Notification Settings */
+        .notification-section {
+            background: white;
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            margin-bottom: 2rem;
+        }
+
+        .switch-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .switch-container:last-child {
+            border-bottom: none;
+        }
+
+        .switch-label {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .switch-label span:first-child {
+            font-weight: 500;
+            color: var(--primary-color);
+            margin-bottom: 3px;
+        }
+
+        .switch-label span:last-child {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: var(--primary-color);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+
+        /* Security Settings */
+        .security-section {
+            background: white;
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            margin-bottom: 2rem;
+        }
+
+        .security-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .security-item:last-child {
+            border-bottom: none;
+        }
+
+        .security-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .security-icon {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+        }
+
+        .security-text h4 {
+            font-weight: 500;
+            color: var(--primary-color);
+            margin-bottom: 3px;
+        }
+
+        .security-text p {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .security-action .btn {
+            padding: 8px 15px;
+            font-size: 0.9rem;
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--dark-color);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+            border-radius: 10px;
+            margin-top: 2rem;
+        }
+
+        .footer p {
+            margin-bottom: 1rem;
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 1rem;
+        }
+
+        .social-link {
+            color: white;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+        }
+
+        .social-link:hover {
+            color: var(--secondary-color);
+            transform: translateY(-3px);
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 992px) {
+            .sidebar {
+                transform: translateX(-100%);
+                position: fixed;
+                top: 70px;
+                left: 0;
+                width: 280px;
+                height: calc(100vh - 70px);
+                z-index: 999;
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .mobile-menu-btn {
+                display: block;
+            }
+
+            .settings-header h1 {
+                font-size: 1.8rem;
+            }
+
+            .settings-form {
+                grid-template-columns: 1fr;
+            }
+
+            .form-actions {
+                grid-column: span 1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .settings-sections {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .header {
+                padding: 1rem;
+            }
+
+            .logo-text h1 {
+                font-size: 1.2rem;
+            }
+
+            .logo-text p {
+                font-size: 0.7rem;
+            }
+
+            .settings-header {
+                padding: 2rem 1rem;
+            }
+
+            .settings-header h1 {
+                font-size: 1.5rem;
+            }
+
+            .section-title {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="logo">
+            <img src="images/Logo.png" alt="Rongo University Logo" id="university-logo">
+            <div class="logo-text">
+                <h1>Rongo University</h1>
+                <p>Campus Voting System</p>
+            </div>
+        </div>
+        <button class="mobile-menu-btn" id="mobileMenuBtn">
+            <i class="fas fa-bars"></i>
+        </button>
+    </header>
+
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <nav>
+            <div class="sidebar-nav">
+                <a href="index.html" class="sidebar-link">
+                    <i class="fas fa-home"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="voting.html" class="sidebar-link">
+                    <i class="fas fa-vote-yea"></i>
+                    <span>Current Elections</span>
+                </a>
+                <a href="voting-history.html" class="sidebar-link">
+                    <i class="fas fa-history"></i>
+                    <span>Voting History</span>
+                </a>
+                <a href="candidates.html" class="sidebar-link">
+                    <i class="fas fa-user-graduate"></i>
+                    <span>Candidates</span>
+                </a>
+                <a href="results.html" class="sidebar-link">
+                    <i class="fas fa-poll"></i>
+                    <span>Results</span>
+                </a>
+                <a href="#" class="sidebar-link">
+                    <i class="fas fa-user-shield"></i>
+                    <span>Admin Panel</span>
+                </a>
+                <a href="settings.html" class="sidebar-link active">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
+                </a>
+                <a href="help.html" class="sidebar-link">
+                    <i class="fas fa-question-circle"></i>
+                    <span>Help & Support</span>
+                </a>
+            </div>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content" id="mainContent">
+        <!-- Settings Header -->
+        <section class="settings-header">
+            <div class="settings-header-content">
+                <h1>Account Settings</h1>
+                <p>Manage your profile information, notification preferences, and security settings to customize your voting experience.</p>
+            </div>
+        </section>
+
+        <!-- Quick Settings Cards -->
+        <div class="settings-sections">
+            <div class="settings-card" onclick="location.href='#account'">
+                <div class="settings-card-icon">
+                    <i class="fas fa-user-cog"></i>
+                </div>
+                <h3>Profile Settings</h3>
+                <p>Update your personal information, profile picture, and account details.</p>
+            </div>
+            <div class="settings-card" onclick="location.href='#notifications'">
+                <div class="settings-card-icon">
+                    <i class="fas fa-bell"></i>
+                </div>
+                <h3>Notifications</h3>
+                <p>Configure how and when you receive notifications about elections.</p>
+            </div>
+            <div class="settings-card" onclick="location.href='#security'">
+                <div class="settings-card-icon">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <h3>Security</h3>
+                <p>Manage your password, two-factor authentication, and login security.</p>
+            </div>
+            <div class="settings-card" onclick="location.href='#privacy'">
+                <div class="settings-card-icon">
+                    <i class="fas fa-lock"></i>
+                </div>
+                <h3>Privacy</h3>
+                <p>Control what information is visible to others and manage data permissions.</p>
+            </div>
+        </div>
+
+        <!-- Account Settings Section -->
+        <div class="account-section" id="account">
+            <h2 class="section-title">
+                <i class="fas fa-user-cog"></i> Profile Information
+            </h2>
+            
+            <form class="settings-form" id="profileForm">
+                <div class="form-group">
+                    <label for="firstName">First Name</label>
+                    <input type="text" id="firstName" class="form-control" value="John" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="lastName">Last Name</label>
+                    <input type="text" id="lastName" class="form-control" value="Doe" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" class="form-control" value="john.doe@rongo.edu" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="studentId">Student ID</label>
+                    <input type="text" id="studentId" class="form-control" value="RGU2023001" readonly>
+                </div>
+                
+                <div class="form-group">
+                    <label for="department">Department</label>
+                    <input type="text" id="department" class="form-control" value="Computer Science" readonly>
+                </div>
+                
+                <div class="form-group">
+                    <label for="phone">Phone Number</label>
+                    <input type="tel" id="phone" class="form-control" value="+254712345678">
+                </div>
+                
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary">
+                        <i class="fas fa-times"></i> Cancel
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i> Save Changes
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Notification Settings Section -->
+        <div class="notification-section" id="notifications">
+            <h2 class="section-title">
+                <i class="fas fa-bell"></i> Notification Preferences
+            </h2>
+            <p>Customize how you receive notifications about upcoming elections, voting reminders, and results.</p>
+            
+            <div class="switch-container">
+                <div class="switch-label">
+                    <span>Email Notifications</span>
+                    <span>Receive important notifications via email</span>
+                </div>
+                <label class="switch">
+                    <input type="checkbox" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+            
+            <div class="switch-container">
+                <div class="switch-label">
+                    <span>SMS Notifications</span>
+                    <span>Get voting reminders via text message</span>
+                </div>
+                <label class="switch">
+                    <input type="checkbox">
+                    <span class="slider"></span>
+                </label>
+            </div>
+            
+            <div class="switch-container">
+                <div class="switch-label">
+                    <span>Push Notifications</span>
+                    <span>Enable in-app notifications</span>
+                </div>
+                <label class="switch">
+                    <input type="checkbox" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+            
+            <div class="switch-container">
+                <div class="switch-label">
+                    <span>Election Reminders</span>
+                    <span>Get reminders before elections start</span>
+                </div>
+                <label class="switch">
+                    <input type="checkbox" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+            
+            <div class="switch-container">
+                <div class="switch-label">
+                    <span>Results Announcements</span>
+                    <span>Notify me when election results are published</span>
+                </div>
+                <label class="switch">
+                    <input type="checkbox" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+        </div>
+
+        <!-- Security Settings Section -->
+        <div class="security-section" id="security">
+            <h2 class="section-title">
+                <i class="fas fa-shield-alt"></i> Security Settings
+            </h2>
+            <p>Manage your account security and login preferences.</p>
+            
+            <div class="security-item">
+                <div class="security-info">
+                    <div class="security-icon">
+                        <i class="fas fa-key"></i>
+                    </div>
+                    <div class="security-text">
+                        <h4>Password</h4>
+                        <p>Last changed 3 months ago</p>
+                    </div>
+                </div>
+                <div class="security-action">
+                    <button class="btn btn-primary">
+                        <i class="fas fa-edit"></i> Change
+                    </button>
+                </div>
+            </div>
+            
+            <div class="security-item">
+                <div class="security-info">
+                    <div class="security-icon">
+                        <i class="fas fa-mobile-alt"></i>
+                    </div>
+                    <div class="security-text">
+                        <h4>Two-Factor Authentication</h4>
+                        <p>Add an extra layer of security to your account</p>
+                    </div>
+                </div>
+                <div class="security-action">
+                    <label class="switch">
+                        <input type="checkbox">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+            </div>
+            
+            <div class="security-item">
+                <div class="security-info">
+                    <div class="security-icon">
+                        <i class="fas fa-laptop"></i>
+                    </div>
+                    <div class="security-text">
+                        <h4>Active Sessions</h4>
+                        <p>2 devices currently logged in</p>
+                    </div>
+                </div>
+                <div class="security-action">
+                    <button class="btn btn-secondary">
+                        <i class="fas fa-eye"></i> View
+                    </button>
+                </div>
+            </div>
+            
+            <div class="security-item">
+                <div class="security-info">
+                    <div class="security-icon">
+                        <i class="fas fa-trash-alt"></i>
+                    </div>
+                    <div class="security-text">
+                        <h4>Delete Account</h4>
+                        <p>Permanently delete your account and all data</p>
+                    </div>
+                </div>
+                <div class="security-action">
+                    <button class="btn btn-secondary" style="color: var(--accent-color);">
+                        <i class="fas fa-trash-alt"></i> Delete
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="social-links">
+                <a href="#" class="social-link"><i class="fab fa-facebook-f"></i></a>
+                <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+                <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
+                <a href="#" class="social-link"><i class="fab fa-linkedin-in"></i></a>
+            </div>
+            <p>© 2023 Rongo University Voting System. All rights reserved.</p>
+            <p>Need help? Contact us anytime at voting-support@rongo.edu</p>
+        </footer>
+    </main>
+
+    <script>
+        // Mobile Menu Toggle
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const sidebar = document.getElementById('sidebar');
+        const mainContent = document.getElementById('mainContent');
+
+        mobileMenuBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            sidebar.classList.toggle('active');
+            mobileMenuBtn.innerHTML = sidebar.classList.contains('active') 
+                ? '<i class="fas fa-times"></i>' 
+                : '<i class="fas fa-bars"></i>';
+        });
+
+        // Close sidebar when clicking outside (but not on links)
+        document.addEventListener('click', (e) => {
+            if (window.innerWidth <= 992 && sidebar.classList.contains('active')) {
+                // Check if click is outside sidebar and not on a sidebar link
+                if (!sidebar.contains(e.target) && !e.target.closest('.sidebar-link')) {
+                    sidebar.classList.remove('active');
+                    mobileMenuBtn.innerHTML = '<i class="fas fa-bars"></i>';
+                }
+            }
+        });
+
+        // Prevent sidebar links from triggering the document click handler
+        document.querySelectorAll('.sidebar-link').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.stopPropagation();
+            });
+        });
+
+        // Form submission
+        document.getElementById('profileForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // In a real app, this would send the form data to a server
+            alert('Your profile changes have been saved successfully.');
+        });
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
+</body>
+</html>
